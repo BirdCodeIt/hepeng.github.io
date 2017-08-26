@@ -118,6 +118,6 @@ This tag will let you <strike>strikeout text</strike>.
 Here comes an image!
 
 ![smiley](https://kramdown.gettalong.org/overview.png)
-![smiley]({{ site.baseurl }}/assets/images/test.jpg)
+![smiley]({{ site.baseurl }}/assets/images/test.JPG)
 
 [^1]: This is a footnote.

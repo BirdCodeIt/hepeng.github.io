@@ -47,8 +47,8 @@ author:
     - name: vk
       url:
 home:
-  section1: <h1>Simple Texutre</h1>
-  section2: <h2>A gem-based responsive simple texture styled Jekyll theme</h2>
+  section1: <h1>何鹏</h1>
+  section2: <h2>武汉理工大学在读硕士，JAVA学习者</h2>
   section3: <div class="social-links"><a class="ico-github btn" href="https://hepeng1008.github.io"></a></div>
 blog:
   cc_license: # A link to CC License of your choice, e.g. https://hepeng1008.github.io/blog/.

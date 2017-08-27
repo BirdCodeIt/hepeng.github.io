@@ -1,7 +1,7 @@
 # Site Settings
 encoding: UTF-8
 exclude: ["*.gem", "*.gemspec", "Gemfile", "Gemfile.lock", "node_modules", "Rakefile", "starter-kit", "vendor"]
-lang: en # Language code as defined in _data/i18n.yml. en, en-gb, en-us, zh, zh-cn, zh-tw etc.
+lang: zn # Language code as defined in _data/i18n.yml. en, en-gb, en-us, zh, zh-cn, zh-tw etc.
 permalink: /blog/:year/:month/:day/:title/
 
 whitelist: [jekyll-feed, jekyll-redirect-from, jekyll-seo-tag, jekyll-sitemap]
@@ -48,8 +48,9 @@ author:
       url:
 home:
   section1: <h1>何鹏</h1>
-  section2: <h2>武汉理工大学在读硕士，JAVA学习者</h2>
-  section3: <div class="social-links"><a class="ico-github btn" href="https://hepeng1008.github.io"></a></div>
+  section2: <h2>武汉理工大学在读硕士</h2>
+  section3: <h2>JAVA学习者</h2>
+  section4: <div class="social-links"><a class="ico-github btn" href="https://hepeng1008.github.io"></a></div>
 blog:
   cc_license: # A link to CC License of your choice, e.g. https://hepeng1008.github.io/blog/.
   cc_license_image: # An image of your CC License, e.g. /assets/images/theme/cc-by-sa.png

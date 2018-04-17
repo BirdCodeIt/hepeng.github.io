@@ -13,180 +13,53 @@ redirect_from:
 * Kramdown table of contents
 {:toc .toc}
 
-# 题目描述
-
-对所有员工的当前(to_date='9999-01-01')薪水按照salary进行按照1-N的排名，相同salary并列且按照emp_no升序排列
-
-# 创建表
-
-~~~ ruby
-CREATE TABLE `salaries` (
-`emp_no` int(11) NOT NULL,
-`salary` int(11) NOT NULL,
-`from_date` date NOT NULL,
-`to_date` date NOT NULL,
-PRIMARY KEY (`emp_no`,`from_date`));
-~~~
-
-# 插入数据
-
-~~~ ruby
-INSERT INTO salaries VALUES(10001,60117,'1986-06-26','1987-06-26');
-INSERT INTO salaries VALUES(10001,62102,'1987-06-26','1988-06-25');
-INSERT INTO salaries VALUES(10001,66074,'1988-06-25','1989-06-25');
-INSERT INTO salaries VALUES(10001,66596,'1989-06-25','1990-06-25');
-INSERT INTO salaries VALUES(10001,66961,'1990-06-25','1991-06-25');
-INSERT INTO salaries VALUES(10001,71046,'1991-06-25','1992-06-24');
-INSERT INTO salaries VALUES(10001,74333,'1992-06-24','1993-06-24');
-INSERT INTO salaries VALUES(10001,75286,'1993-06-24','1994-06-24');
-INSERT INTO salaries VALUES(10001,75994,'1994-06-24','1995-06-24');
-INSERT INTO salaries VALUES(10001,76884,'1995-06-24','1996-06-23');
-INSERT INTO salaries VALUES(10001,80013,'1996-06-23','1997-06-23');
-INSERT INTO salaries VALUES(10001,81025,'1997-06-23','1998-06-23');
-INSERT INTO salaries VALUES(10001,81097,'1998-06-23','1999-06-23');
-INSERT INTO salaries VALUES(10001,84917,'1999-06-23','2000-06-22');
-INSERT INTO salaries VALUES(10001,85112,'2000-06-22','2001-06-22');
-INSERT INTO salaries VALUES(10001,85097,'2001-06-22','2002-06-22');
-INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
-INSERT INTO salaries VALUES(10002,72527,'1996-08-03','1997-08-03');
-INSERT INTO salaries VALUES(10002,72527,'1997-08-03','1998-08-03');
-INSERT INTO salaries VALUES(10002,72527,'1998-08-03','1999-08-03');
-INSERT INTO salaries VALUES(10002,72527,'1999-08-03','2000-08-02');
-INSERT INTO salaries VALUES(10002,72527,'2000-08-02','2001-08-02');
-INSERT INTO salaries VALUES(10002,72527,'2001-08-02','9999-01-01');
-INSERT INTO salaries VALUES(10003,40006,'1995-12-03','1996-12-02');
-INSERT INTO salaries VALUES(10003,43616,'1996-12-02','1997-12-02');
-INSERT INTO salaries VALUES(10003,43466,'1997-12-02','1998-12-02');
-INSERT INTO salaries VALUES(10003,43636,'1998-12-02','1999-12-02');
-INSERT INTO salaries VALUES(10003,43478,'1999-12-02','2000-12-01');
-INSERT INTO salaries VALUES(10003,43699,'2000-12-01','2001-12-01');
-INSERT INTO salaries VALUES(10003,43311,'2001-12-01','9999-01-01');
-INSERT INTO salaries VALUES(10004,40054,'1986-12-01','1987-12-01');
-INSERT INTO salaries VALUES(10004,42283,'1987-12-01','1988-11-30');
-INSERT INTO salaries VALUES(10004,42542,'1988-11-30','1989-11-30');
-INSERT INTO salaries VALUES(10004,46065,'1989-11-30','1990-11-30');
-INSERT INTO salaries VALUES(10004,48271,'1990-11-30','1991-11-30');
-INSERT INTO salaries VALUES(10004,50594,'1991-11-30','1992-11-29');
-INSERT INTO salaries VALUES(10004,52119,'1992-11-29','1993-11-29');
-INSERT INTO salaries VALUES(10004,54693,'1993-11-29','1994-11-29');
-INSERT INTO salaries VALUES(10004,58326,'1994-11-29','1995-11-29');
-INSERT INTO salaries VALUES(10004,60770,'1995-11-29','1996-11-28');
-INSERT INTO salaries VALUES(10004,62566,'1996-11-28','1997-11-28');
-INSERT INTO salaries VALUES(10004,64340,'1997-11-28','1998-11-28');
-INSERT INTO salaries VALUES(10004,67096,'1998-11-28','1999-11-28');
-INSERT INTO salaries VALUES(10004,69722,'1999-11-28','2000-11-27');
-INSERT INTO salaries VALUES(10004,70698,'2000-11-27','2001-11-27');
-INSERT INTO salaries VALUES(10004,74057,'2001-11-27','9999-01-01');
-INSERT INTO salaries VALUES(10005,78228,'1989-09-12','1990-09-12');
-INSERT INTO salaries VALUES(10005,82621,'1990-09-12','1991-09-12');
-INSERT INTO salaries VALUES(10005,83735,'1991-09-12','1992-09-11');
-INSERT INTO salaries VALUES(10005,85572,'1992-09-11','1993-09-11');
-INSERT INTO salaries VALUES(10005,85076,'1993-09-11','1994-09-11');
-INSERT INTO salaries VALUES(10005,86050,'1994-09-11','1995-09-11');
-INSERT INTO salaries VALUES(10005,88448,'1995-09-11','1996-09-10');
-INSERT INTO salaries VALUES(10005,88063,'1996-09-10','1997-09-10');
-INSERT INTO salaries VALUES(10005,89724,'1997-09-10','1998-09-10');
-INSERT INTO salaries VALUES(10005,90392,'1998-09-10','1999-09-10');
-INSERT INTO salaries VALUES(10005,90531,'1999-09-10','2000-09-09');
-INSERT INTO salaries VALUES(10005,91453,'2000-09-09','2001-09-09');
-INSERT INTO salaries VALUES(10005,94692,'2001-09-09','9999-01-01');
-INSERT INTO salaries VALUES(10006,43311,'1990-08-05','1991-08-05');
-INSERT INTO salaries VALUES(10006,43311,'1991-08-05','1992-08-04');
-INSERT INTO salaries VALUES(10006,43311,'1992-08-04','1993-08-04');
-INSERT INTO salaries VALUES(10006,43311,'1993-08-04','1994-08-04');
-INSERT INTO salaries VALUES(10006,43311,'1994-08-04','1995-08-04');
-INSERT INTO salaries VALUES(10006,43311,'1995-08-04','1996-08-03');
-INSERT INTO salaries VALUES(10006,43311,'1996-08-03','1997-08-03');
-INSERT INTO salaries VALUES(10006,43311,'1997-08-03','1998-08-03');
-INSERT INTO salaries VALUES(10006,43311,'1998-08-03','1999-08-03');
-INSERT INTO salaries VALUES(10006,43311,'1999-08-03','2000-08-02');
-INSERT INTO salaries VALUES(10006,43311,'2000-08-02','2001-08-02');
-INSERT INTO salaries VALUES(10006,43311,'2001-08-02','9999-01-01');
-INSERT INTO salaries VALUES(10007,56724,'1989-02-10','1990-02-10');
-INSERT INTO salaries VALUES(10007,60740,'1990-02-10','1991-02-10');
-INSERT INTO salaries VALUES(10007,62745,'1991-02-10','1992-02-10');
-INSERT INTO salaries VALUES(10007,63475,'1992-02-10','1993-02-09');
-INSERT INTO salaries VALUES(10007,63208,'1993-02-09','1994-02-09');
-INSERT INTO salaries VALUES(10007,64563,'1994-02-09','1995-02-09');
-INSERT INTO salaries VALUES(10007,68833,'1995-02-09','1996-02-09');
-INSERT INTO salaries VALUES(10007,70220,'1996-02-09','1997-02-08');
-INSERT INTO salaries VALUES(10007,73362,'1997-02-08','1998-02-08');
-INSERT INTO salaries VALUES(10007,75582,'1998-02-08','1999-02-08');
-INSERT INTO salaries VALUES(10007,79513,'1999-02-08','2000-02-08');
-INSERT INTO salaries VALUES(10007,80083,'2000-02-08','2001-02-07');
-INSERT INTO salaries VALUES(10007,84456,'2001-02-07','2002-02-07');
-INSERT INTO salaries VALUES(10007,88070,'2002-02-07','9999-01-01');
-INSERT INTO salaries VALUES(10008,46671,'1998-03-11','1999-03-11');
-INSERT INTO salaries VALUES(10008,48584,'1999-03-11','2000-03-10');
-INSERT INTO salaries VALUES(10008,52668,'2000-03-10','2000-07-31');
-INSERT INTO salaries VALUES(10009,60929,'1985-02-18','1986-02-18');
-INSERT INTO salaries VALUES(10009,64604,'1986-02-18','1987-02-18');
-INSERT INTO salaries VALUES(10009,64780,'1987-02-18','1988-02-18');
-INSERT INTO salaries VALUES(10009,66302,'1988-02-18','1989-02-17');
-INSERT INTO salaries VALUES(10009,69042,'1989-02-17','1990-02-17');
-INSERT INTO salaries VALUES(10009,70889,'1990-02-17','1991-02-17');
-INSERT INTO salaries VALUES(10009,71434,'1991-02-17','1992-02-17');
-INSERT INTO salaries VALUES(10009,74612,'1992-02-17','1993-02-16');
-INSERT INTO salaries VALUES(10009,76518,'1993-02-16','1994-02-16');
-INSERT INTO salaries VALUES(10009,78335,'1994-02-16','1995-02-16');
-INSERT INTO salaries VALUES(10009,80944,'1995-02-16','1996-02-16');
-INSERT INTO salaries VALUES(10009,82507,'1996-02-16','1997-02-15');
-INSERT INTO salaries VALUES(10009,85875,'1997-02-15','1998-02-15');
-INSERT INTO salaries VALUES(10009,89324,'1998-02-15','1999-02-15');
-INSERT INTO salaries VALUES(10009,90668,'1999-02-15','2000-02-15');
-INSERT INTO salaries VALUES(10009,93507,'2000-02-15','2001-02-14');
-INSERT INTO salaries VALUES(10009,94443,'2001-02-14','2002-02-14');
-INSERT INTO salaries VALUES(10010,94692,'2001-02-14','9999-01-01');
-~~~
-
-# 通过测试的mysql语句
-
-{% highlight ruby linenos=table %}
-
-   SELECT s.emp_no,s.salary,COUNT(DISTINCT s2.salary) AS rank FROM salaries AS s INNER JOIN salaries AS s2 ON s.salary <= s2.salary AND s.to_date='9999-01-01' AND s2.to_date='9999-01-01'
-	GROUP BY s.emp_no ORDER BY rank ASC;
-
-{% endhighlight %}
-
-## 结果
-
-
-* 正确结果
-	
-	|--------+--------+------|
-	| emp_no | salary | rank |
-	|--------|:------:|:----:|
-	|  10005 |  94692 |    1 |
-	|  10010 |  94692 |    1 |
-	|  10001 |  88958 |    2 |
-	|  10007 |  88070 |    3 |
-	|  10004 |  74057 |    4 |
-	|  10002 |  72527 |    5 |
-	|  10003 |  43311 |    6 |
-	|  10006 |  43311 |    6 |
-	|--------|--------|------|
-
-# 原来出现问题的反思
-
-* 1.COUNT(DISTINCT s2.salary) 未使用distinct，导致名词出现确实的情况，例如两个第一的名次，不使用distinct的话，并列第一的两个名次都为2
-
-
-	* 没使用distinct的结果
+# HTTP常见的请求方式
+> 根据HTTP标准，HTTP请求可以使用多种请求方式
+> * HTTP 1.0定义了三种请求方式：GET，POST和HEAD方法
+> * HTTP 1.1新增了五种请求方式：OPTION，PUT，DELETE，TRACE和CONNECT方法
 
 	|--------+--------+------|
-	| emp_no | salary | rank |
-	|--------|:------:|:----:|
-	|  10005 |  94692 |    21111111111111111111111111 |
-	|  10010 |  94692 |    2 |
-	|  10001 |  88958 |    3 |
-	|  10007 |  88070 |    4 |
-	|  10004 |  74057 |    5 |
-	|  10002 |  72527 |    6 |
-	|  10003 |  43311 |    8 |
-	|  10006 |  43311 |    8 |
+	| 序号   |   方法 | 描述 |
+	|--------|:-------|:----|
+	|  1     |  GET   |    请求指定的页面信息，并返回实体主体 |
+	|  2     |  HEAD  |    类似get请求，用于获取报头 |
+	|  3     |  POST  |    提交数据处理请求(例如表单提交或者文件上传)，数据被包含在请求体中 |
+	|  4     |  PUT   |    从客户端想服务器传送数据更新内容 |
+	|  5     |  DELETE|    请求服务器删除指定的页面 |
+	|  6     | CONNECT|    预留给能够将连接改为管道方式的代理服务器 |
+	|  7     | OPTIONS|    允许客户端查看服务器性能 |
+	|  8     |  TRACE |    回显服务器收到的请求，主要用于测试或诊断 |
 	|--------|--------|------|
 
-* 2.s.salary <= s2.salary写为s.salary > s2.salary
+# GET和POST的常规区别
 
-	做的时候没反思，逻辑结果没搞清楚
+	|--------+--------+------|
+	| 方法   | GET    | POST |
+	|--------|:-------|:-----|
+	|  后退/刷新 |  幂等的无害 |    数据会被重新提交 |
+	|  书签 |  可收藏为书签 |    不能收藏为书签 |
+	|  缓存 |  能被缓存 |    不能被缓存 |
+	|  编码类型 |  application/x-www-form-urlencoded	 |    application/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。 |
+	|  历史 |  保留在历史记录中 |    不保留在历史记录中 |
+	|  数据大小限制 |  2048个字符 |    无限制 |
+	|  数据类型限制 |  只允许 ASCII 字符 |    没有限制。也允许二进制数据。 |
+	|  安全性 |  发送的数据是 URL 的一部分。在发送密码或其他敏感信息时绝不要使用 GET |    POST 比 GET 更安全，因为参数不会被保存在浏览器历史或 web 服务器日志中 |
+	|  可见性 |  数据在 URL 中对所有人都是可见的 |    数据不会显示在 URL 中 |
+	|--------|--------|------|
 
+# 从TCP连接方式上的区别
+有一篇文章[99%的人理解错 HTTP 中 GET 与 POST 的区别](https://mp.weixin.qq.com/s?__biz=MzI3NzIzMzg3Mw==&mid=100000054&idx=1&sn=71f6c214f3833d9ca20b9f7dcd9d33e4#rd)，否定了上述回答：“很遗憾，这不是我们要的回答！”，作者说：
+
+> GET和POST本质上就是TCP链接，并无差别。但是由于HTTP的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。 GET和POST还有一个重大区别，简单的说：GET产生一个TCP数据包；POST产生两个TCP数据包。对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）； 而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。
+
+# 从规范上的区别
+RFC7231里紧接着定义了HTTP方法的几个特性：
+
+Safe - 安全
+这里的「安全」和通常理解的「安全」意义不同，如果一个方法的语义在本质上是「只读」的，那么这个方法就是安全的。客户端向服务端的资源发起的请求如果使用了是安全的方法，就不应该引起服务端任何的状态变化，因此也是无害的。 此RFC定义，GET, HEAD, OPTIONS 和 TRACE 这几个方法是安全的。
+但是这个定义只是规范，并不能保证方法的实现也是安全的，服务端的实现可能会不符合方法语义，正如上文说过的使用GET修改用户信息的情况。
+引入安全这个概念的目的是为了方便网络爬虫和缓存，以免调用或者缓存某些不安全方法时引起某些意外的后果。User Agent（浏览器）应该在执行安全和不安全方法时做出区分对待，并给用户以提示。
+Idempotent - 幂等
+幂等的概念是指同一个请求方法执行多次和仅执行一次的效果完全相同。按照RFC规范，PUT，DELETE和安全方法都是幂等的。同样，这也仅仅是规范，服务端实现是否幂等是无法确保的。
+引入幂等主要是为了处理同一个请求重复发送的情况，比如在请求响应前失去连接，如果方法是幂等的，就可以放心地重发一次请求。这也是浏览器在后退/刷新时遇到POST会给用户提示的原因：POST语义不是幂等的，重复请求可能会带来意想不到的后果。
+Cacheable - 可缓存性 顾名思义就是一个方法是否可以被缓存，此RFC里GET，HEAD和某些情况下的POST都是可缓存的，但是绝大多数的浏览器的实现里仅仅支持GET和HEAD。关于缓存的更多内容可以去看RFC7234。

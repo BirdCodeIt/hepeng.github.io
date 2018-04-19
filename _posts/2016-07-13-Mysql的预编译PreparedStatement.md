@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "数据库的5大范式"
-description: "数据库的5大范式"
+title: "mysql的预编译PreparedStatement"
+description: "mysql的预编译PreparedStatement"
 categories: [Mysql]
 tags: [Mysql]
 redirect_from:

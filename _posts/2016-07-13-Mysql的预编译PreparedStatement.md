@@ -5,7 +5,7 @@ description: "mysql的预编译PreparedStatement"
 categories: [Mysql]
 tags: [Mysql]
 redirect_from:
-  - /2016/07/12/
+  - /2016/08/12/
 ---
 
 > 数据库的5大范式

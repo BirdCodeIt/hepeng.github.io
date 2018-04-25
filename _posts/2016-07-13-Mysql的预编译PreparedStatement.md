@@ -13,12 +13,17 @@ redirect_from:
 > 如果能将prepare的结果缓存，以后如果再执行相同模板而测试不同的sql，就可以节省掉prepare(准备)的环节，从而节省sql执行的成本。
 
 例如：
+
 > 1.执行预编译语句，例如：prepare showUsersByLikeName from 'select * from user where username like ?';
+
 > 2.设置变量，例如：set @username='%小明%';
+
 > 3.执行语句，例如：execute showUsersByLikeName using @username;
 
 如果继续进行查找，那么就不再需要第一步，即不需要再编译语句了：
+
 > 1.设置变量，例如：set @username='%小宋%';
+
 > 2.执行语句，例如：execute showUsersByLikeName using @username;
 
 * Kramdown table of contents
@@ -27,6 +32,7 @@ redirect_from:
 # Mysql预编译介绍
 
 > 大家平时都使用过JDBC中的PreparedStatement接口，它有预编译功能。什么是预编译功能呢？它有什么好处呢？
+
 > 当客户发送一条SQL语句给服务器后，服务器总是需要校验SQL语句的语法格式是否正确，然后把SQL语句编译成可执行的函数，最后才是执行SQL语句。其中校验语法，和编译所花的时间可能比执行SQL语句花的时间还要多。
 > 注意：可执行函数存储在MySQL服务器中，并且当前连接断开后，MySQL服务器会清除已经存储的可执行函数。
 > 如果我们需要执行多次insert语句，但只是每次插入的值不同，MySQL服务器也是需要每次都去校验SQL语句的语法格式，以及编译，这就浪费了太多的时间。如果使用预编译功能，那么只对SQL语句进行一次语法校验和编译，所以效率要高。
@@ -268,6 +274,48 @@ public class PrepareStatementDemo {
 
 可以看到开启cachePreStmts后，关闭PrepareStatement后重复执行相同的sql模板的语句第一次预编译后后面不会再进行编译，节约了系统资源，提升了效率。
 Mybatis中#{}使用了预编译功能，${}则是直接字符串替换。
+
+Mysql的一些常见参数可以在官网上进行查询：https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration-properties.html
+
+本文中使用的数据库结构及数据如下：
+~~~ ruby
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 50513
+Source Host           : localhost:3306
+Source Database       : test1
+
+Target Server Type    : MYSQL
+Target Server Version : 50513
+File Encoding         : 65001
+
+Date: 2018-04-25 22:31:39
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL,
+  `age` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
+INSERT INTO `user` VALUES ('1', 'aaa', '20');
+INSERT INTO `user` VALUES ('2', 'bbb', '20');
+INSERT INTO `user` VALUES ('3', 'ccc', '30');
+INSERT INTO `user` VALUES ('4', 'bbb', '20');
+	
+~~~
 
 
 

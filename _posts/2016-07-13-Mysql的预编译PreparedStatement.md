@@ -8,85 +8,131 @@ redirect_from:
   - /2016/08/12/
 ---
 
-> 数据库的5大范式
-> 之所以使用范式，往往是设计不合规范的数据库表可能造成大量的数据冗余，也可能发生在插入，删除，修改操作后出现各种样的不合理问题
+> mysql的预编译PreparedStatement
+> *mysql执行脚本的大致过程如下：prepare(准备)->optimize(优化)->exec(物理执行)*{: style="color: red"}，其中，prepare也就是编译过程。对于同一个sql模板，
+> 如果能将prepare的结果缓存，以后如果再执行相同模板而测试不同的sql，就可以节省掉prepare(准备)的环节，从而节省sql执行的成本。
+
+
 
 * Kramdown table of contents
 {:toc .toc}
 
-# 数据库的5大范式
+# Mysql预编译介绍
 
-## 第一范式
+> 大家平时都使用过JDBC中的PreparedStatement接口，它有预编译功能。什么是预编译功能呢？它有什么好处呢？
+> 当客户发送一条SQL语句给服务器后，服务器总是需要校验SQL语句的语法格式是否正确，然后把SQL语句编译成可执行的函数，最后才是执行SQL语句。其中校验语法，和编译所花的时间可能比执行SQL语句花的时间还要多。
+> 注意：可执行函数存储在MySQL服务器中，并且当前连接断开后，MySQL服务器会清除已经存储的可执行函数。
+> 如果我们需要执行多次insert语句，但只是每次插入的值不同，MySQL服务器也是需要每次都去校验SQL语句的语法格式，以及编译，这就浪费了太多的时间。如果使用预编译功能，那么只对SQL语句进行一次语法校验和编译，所以效率要高。
 
-	1NF:数据库表的每一列都是不可分割的基本数据项。如，“电话号码”这个属性可以继续被分割为“办公电话”，“手机号码”等属性，在第一范式的语义下不应该作为单独的一列出现。
+MySQL Server 4.1之后的版本都是支持预编译的，但是默认是关闭的，需要通过设置useServerPrepStmts=true来开启预编译功能
 
-## 第二范式
+## 默认关闭下的测试
 
-	2NF:必须先满足第一范式。数据库表中的每一行必须是可以被唯一的区分，即每一行中有一个唯一标示将这行与其他行区分开来，这个唯一标示就是我们常说的主键。在
-	2NF的语义下，所有非主键的字段都要依赖主键。比如在学生表中我们用id作为主键，那么当我们需要查询一个学生的时候，通过他的id号应该可以唯一地定位到这个学生，会并且只会查出一行。
+~~~ ruby
 
-## 第三范式
-
-	3NF:必须先满足第二范式。非主键字段都与主键字段有直接依赖关系，不存在传递依赖。可以理解为非主键字段值依赖主键字段，而不依赖其他的非主键字段。
-	比如员工表的字段构成为：员工id（主键），姓名，性别，年龄，所属部门，部门经理姓名，部门电话。
-	这里所有的非主键字段并不是直接依赖于主键“员工id”，可以看到“部门经理姓名”和“部门电话”这两个属性依赖于“所属部门”，而“所属部门”又依赖于主键“员工id”，
-	这就是传递依赖，这里可将该员工的表结构改成：员工id（主键），姓名，性别，年龄，部门名称
-	单独提出部门表结构为：部门名称（主键），部门经理id，部门电话
-
-## BCNF:第三范式的扩展和加强，用以下例子说明
-
-	BCNF:第三范式的扩展和加强，用以下例子说明：
-	表结构：仓库id 管理员id 物品id 物品数量
-	其中管理员和仓库是一对一，仓库和物品是一对多
-	这个设计符合第一，二，三范式，即每列不可分割，主键唯一且不存在传递依赖；
-	可看到的依赖关系有，管理员id 依赖 仓库id，物品id 依赖 仓库id。即存在主键到主键再到非主键的传递依赖关系。
-	这里主要的问题是，仓库id和管理员id这两个关键字段之间的关系被耦合到每一个实例中，这导致
-	a）表中没有数据的时候，无法描述仓库和管理员之间的关系
-	b）一个仓库的管理员替换后，表中所有含有该仓库的实例中的管理员id都要被修改
-	
-	解决办法是将二者的关系单独提出来创建表。
-	则原表结构为：仓库id 物品id 物品数量
-	新增的表结构为：仓库id  管理员id
-	这样 仓库和管理员的关系 及仓库和物品的关系就解耦合了
-	
-## 第四范式
-	4NF（第四范式）：必须先满足第三范式。简单来说就是将表中的多值属性拆分出来，分别建表。
-	比如在用户表中有一个非主键字段“电话号码”，某一行实例的“电话号码”内容可能是手机号码，可能是座机号码，也可能是多个内容的直接组合（如“电影”属性中填“动作，喜剧，科幻”）， 这就是多值属性。
-	例：
-	用户表包含一个多值字段“爱好”，某个实例内容可能为：
-	* 用户表
-	
-	|---
-    | 用户id  | 姓名 | 爱好 
-    |-|:-|:-
-    | 1 | John | 足球、游泳、植物大战僵尸 
-    
-	
-	这种情况可以再单独拆出一个爱好表，如下：
-	* 爱好表
-	
-	|---
-    | 用户id  | 爱好 
-    |-|:-
-    | 1 | 足球
-	| 1 | 游泳
-	| 1 | 植物大战僵尸 
-	| 2 | 乒乓球
-	| 3 | 野外求生
+public class PrepareStatementDemo {
 
 
+    public static void main(String[] args) {
 
-	在网上看到一种方案是直接加一个字段来约束多值属性内容，如下：
-	* 联系表
+        //数据库连接
+        Connection connection = null;
 
-	|---
-    | 用户id  | 电话类别 | 电话号码 
-    |-|:-|:-
-    | 1 | 手机| 12345678
-	| 2 | 家庭座机| 020-123456
-	| 3 | 手机| 22345678 
+        //预编译的Statement，使用预编译的Statement提高数据库性能
+        PreparedStatement preparedStatement = null;
+
+        //结果集
+        ResultSet resultSet = null;
+
+        try {
+            //加载数据库驱动
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //通过驱动管理类获取数据库链接
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test1","root","root");
+
+            //定义SQL语句
+            String sql  = "select * from user where name = ?";
+
+            //获取预处理statement
+            preparedStatement = connection.prepareStatement(sql);
+
+            //设置参数，第一个参数为sql语句中参数的序号(从1开始)，第二个参数为设置的参数值
+            preparedStatement.setString(1,"aaa");
+
+            //向数据库发出sql执行查询，查询出结果集
+            resultSet = preparedStatement.executeQuery();
+
+            preparedStatement.setString(1, "bbb");
+            resultSet =  preparedStatement.executeQuery();
+            //遍历查询结果集
+            while(resultSet.next()){
+                System.out.println(resultSet.getString("id")+"  "+resultSet.getString("name"));
+            }
+            resultSet.close();
+            preparedStatement.close();
+
+            System.out.println("#############################");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(resultSet!=null){
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+
+~~~
+
+通过查看MySQL的执行log如下：
+
+~~~ ruby
+18 Query	/* mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e ) */SELECT  @@session.auto_increment_increment AS auto_increment_increment, @@character_set_client AS character_set_client, @@character_set_connection AS character_set_connection, @@character_set_results AS character_set_results, @@character_set_server AS character_set_server, @@collation_server AS collation_server, @@init_connect AS init_connect, @@interactive_timeout AS interactive_timeout, @@license AS license, @@lower_case_table_names AS lower_case_table_names, @@max_allowed_packet AS max_allowed_packet, @@net_buffer_length AS net_buffer_length, @@net_write_timeout AS net_write_timeout, @@query_cache_size AS query_cache_size, @@query_cache_type AS query_cache_type, @@sql_mode AS sql_mode, @@system_time_zone AS system_time_zone, @@time_zone AS time_zone, @@tx_isolation AS transaction_isolation, @@wait_timeout AS wait_timeout
+18 Query	SET NAMES latin1
+18 Query	SET character_set_results = NULL
+18 Query	SET autocommit=1
+18 Query	select * from user where name = 'aaa'
+18 Query	select * from user where name = 'bbb'
+18 Quit	
+~~~
+
+发现系统并没有使用预编译功能，通过连接时设置useServerPrepStmts=true，DriverManager.getConnection("jdbc:mysql://localhost:3306/test1?&*useServerPrepStmts=true*{: style="color: red"}","root","root")后执行的结果如下：
 
 
-	这种设计不符合第三范式，电话类别这个属性和主键是没有依赖关系的，它仅仅用来约束电话号码的内容。  优点是较上述解决办法可以减少多表查询的开销。
-	
->范式是人们在具体的业务场景中遇到问题逐渐总结出来的通用解决思路，在实际开发中如果并不常用到某些范式，可能只是问题和数据的规模还没达到。 
+~~~ ruby
+21 Query	/* mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e ) */SELECT  @@session.auto_increment_increment AS auto_increment_increment, @@character_set_client AS character_set_client, @@character_set_connection AS character_set_connection, @@character_set_results AS character_set_results, @@character_set_server AS character_set_server, @@collation_server AS collation_server, @@init_connect AS init_connect, @@interactive_timeout AS interactive_timeout, @@license AS license, @@lower_case_table_names AS lower_case_table_names, @@max_allowed_packet AS max_allowed_packet, @@net_buffer_length AS net_buffer_length, @@net_write_timeout AS net_write_timeout, @@query_cache_size AS query_cache_size, @@query_cache_type AS query_cache_type, @@sql_mode AS sql_mode, @@system_time_zone AS system_time_zone, @@time_zone AS time_zone, @@tx_isolation AS transaction_isolation, @@wait_timeout AS wait_timeout
+21 Query	SET NAMES latin1
+21 Query	SET character_set_results = NULL
+21 Query	SET autocommit=1
+21 *Prepare	select * from user where name = ?*{: style="color: red"}
+21 Execute	select * from user where name = 'aaa'
+21 Execute	select * from user where name = 'bbb'
+21 Close stmt	
+21 Quit	
+~~~
+
+

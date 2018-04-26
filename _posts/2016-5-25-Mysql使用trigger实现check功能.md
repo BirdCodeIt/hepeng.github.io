@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Mysql打开log记录"
-description: "Mysql打开log记录"
+title: "Mysql使用trigger"
+description: "Mysql使用trigger"
 categories: [Mysql]
 tags: [Mysql]
 redirect_from:
